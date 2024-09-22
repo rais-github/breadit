@@ -1,11 +1,11 @@
 "use client";
 
-// import { formatTimeToNow } from "@/lib/utils";
+import { formatTimeToNow } from "@/lib/utils";
 import { Post, User, Vote } from "@prisma/client";
 import { MessageSquare } from "lucide-react";
 import Link from "next/link";
 import { FC, useRef } from "react";
-// import EditorOutput from "./EditorOutput";
+import EditorOutput from "./EditorOutput";
 // import PostVoteClient from "./post-vote/PostVoteClient";
 
 type PartialVote = Pick<Vote, "type">;
@@ -53,11 +53,11 @@ const Post: FC<PostProps> = ({
               </>
             ) : null}
             <span>Posted by u/{post.author.username}</span>{" "}
-            {/* {formatTimeToNow(new Date(post.createdAt))} */}
+            <em>{formatTimeToNow(new Date(post.createdAt))}</em>
           </div>
           <a href={`/r/${subredditName}/post/${post.id}`}>
             <h1 className="text-lg font-semibold py-2 leading-6 text-gray-900">
-              {post.title}
+              <strong>{post.title}</strong>
             </h1>
           </a>
 
@@ -65,11 +65,11 @@ const Post: FC<PostProps> = ({
             className="relative text-sm max-h-40 w-full overflow-clip"
             ref={pRef}
           >
-            {/* <EditorOutput content={post.content} />
+            <EditorOutput content={post.content} />
             {pRef.current?.clientHeight === 160 ? (
               // blur bottom if content is too long
               <div className="absolute bottom-0 left-0 h-24 w-full bg-gradient-to-t from-white to-transparent"></div>
-            ) : null} */}
+            ) : null}
           </div>
         </div>
       </div>
