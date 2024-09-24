@@ -54,3 +54,12 @@ export function formatTimeToNow(date: Date): string {
     },
   });
 }
+
+// Helper function to count votes
+export function getVoteCount(votes: { type: string }[]): number {
+  return votes.reduce((acc, vote) => {
+    if (vote.type === "UP") return acc + 1;
+    if (vote.type === "DOWN") return acc - 1;
+    return acc;
+  }, 0);
+}
