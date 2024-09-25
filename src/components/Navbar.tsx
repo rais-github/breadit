@@ -4,7 +4,7 @@ import Link from "next/link";
 import { Icons } from "./Icons";
 import { buttonVariants } from "./ui/Button";
 import { UserAccountNav } from "./UserAccountNav";
-// import SearchBar from "./SearchBar";
+import SearchBar from "./SearchBar";
 
 const Navbar = async () => {
   const session = await getServerSession(authOptions);
@@ -20,7 +20,7 @@ const Navbar = async () => {
         </Link>
 
         {/* search bar */}
-        {/* <SearchBar /> */}
+        <SearchBar />
 
         {/* actions */}
         {session?.user ? (
