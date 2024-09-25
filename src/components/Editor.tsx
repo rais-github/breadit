@@ -1,6 +1,6 @@
 "use client";
 
-import type EditorJS from "@editorjs/editorjs";
+import EditorJS from "@editorjs/editorjs";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { usePathname, useRouter } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -9,7 +9,7 @@ import TextareaAutosize from "react-textarea-autosize";
 import { z } from "zod";
 
 import { toast } from "@/hooks/use-toast";
-import { useUploadThing } from "@/lib/uploadthing";
+import { uploadFiles } from "@/lib/uploadthing";
 import { PostCreationRequest, PostValidator } from "@/lib/validators/post";
 import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
@@ -35,8 +35,7 @@ export const Editor: React.FC<EditorProps> = ({ subredditId }) => {
       content: null,
     },
   });
-
-  const ref = useRef<EditorJS>(); //to check editor has been initialsed or not
+  const ref = useRef<EditorJS>();
   const _titleRef = useRef<HTMLTextAreaElement>(null);
   const router = useRouter();
   const [isMounted, setIsMounted] = useState<boolean>(false);
@@ -71,7 +70,6 @@ export const Editor: React.FC<EditorProps> = ({ subredditId }) => {
       });
     },
   });
-  const { startUpload } = useUploadThing("imageUploader");
 
   const initializeEditor = useCallback(async () => {
     const EditorJS = (await import("@editorjs/editorjs")).default;
@@ -107,16 +105,22 @@ export const Editor: React.FC<EditorProps> = ({ subredditId }) => {
               uploader: {
                 async uploadByFile(file: File) {
                   // upload to uploadthing
-                  const response = await startUpload([file]);
+                  const [res] = await uploadFiles("imageUploader", {
+                    files: [file],
+                    onUploadBegin: ({ file }) => {
+                      console.log(`Uploading started for: ${file}`);
+                    },
+                    onUploadProgress: ({ file, progress }) => {
+                      console.log(`Uploading ${file.name}: ${progress}%`);
+                    },
+                  });
 
-                  if (response && response.length > 0) {
-                    return {
-                      success: 1,
-                      file: {
-                        url: response[0].fileUrl,
-                      },
-                    };
-                  }
+                  return {
+                    success: 1,
+                    file: {
+                      url: res.url,
+                    },
+                  };
                 },
               },
             },
