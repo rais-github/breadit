@@ -4,7 +4,7 @@ import { db } from "@/lib/db";
 import PostFeed from "../PostFeed";
 import { notFound } from "next/navigation";
 
-const CustomFeed: () => Promise<JSX.Element> = async () => {
+const CustomFeed = async () => {
   const session = await getAuthSession();
 
   // only rendered if session exists, so this will not happen
