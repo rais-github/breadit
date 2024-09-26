@@ -7,6 +7,10 @@ export async function GET(req: Request): Promise<Response> {
 
   const session = await getAuthSession();
 
+  if (!session?.user) {
+    return new Response("Unauthorized User", { status: 401 });
+  }
+
   let followedCommunitiesIds: Array<string> = [];
 
   if (session) {
