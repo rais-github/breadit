@@ -7,7 +7,7 @@
 
 # testing
 /coverage
-
+middleware.ts
 # next.js
 /.next/
 /out/
