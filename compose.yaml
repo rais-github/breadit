@@ -1,0 +1,32 @@
+services:
+  frontend:
+    # uncomment the following line if you want to run a local instance of MongoDB
+    # depends_on:
+    #   - db
+    build:
+      context: .
+      dockerfile: Dockerfile
+
+    # do port mapping so that we can access the app from the browser
+    ports:
+      - 3000:3000
+
+    # use docker compose to watch for changes and rebuild the container
+    develop:
+      watch:
+        - path: ./package.json
+          action: rebuild
+        - path: ./next.config.js
+          action: rebuild
+        - path: ./package-lock.json
+          action: rebuild
+        - path: .
+          target: /app
+          action: sync
+
+    # define the environment variables
+    environment:
+      DB_URL: postgresql://neondb_owner:1UkuKdcYfTN4@ep-super-lake-a5pypwhl.us-east-2.aws.neon.tech:5432/neondb?sslmode=require
+
+volumes:
+  tasked:
