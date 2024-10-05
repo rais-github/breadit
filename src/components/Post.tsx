@@ -9,6 +9,7 @@ import EditorOutput from "./EditorOutput";
 import PostVoteClient from "./post-vote/PostVoteClient";
 import { Trash2 } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
+import { useSession } from "next-auth/react";
 
 type PartialVote = Pick<Vote, "type">;
 
@@ -31,7 +32,7 @@ const Post: FC<PostProps> = ({
   commentAmt,
 }) => {
   const pRef = useRef<HTMLParagraphElement>(null);
-
+  const { data: session } = useSession();
   const handleDelete = async () => {
     const confirmed = window.confirm(
       "Are you sure you want to delete this post?"
@@ -103,10 +104,11 @@ const Post: FC<PostProps> = ({
               <em>{formatTimeToNow(new Date(post.createdAt))}</em>
             </div>
 
-            {/* Trash2 button with delete functionality */}
-            <a onClick={handleDelete} className="ml-2 cursor-pointer">
-              <Trash2 size={28} strokeWidth={2.75} />
-            </a>
+            {session?.user?.id === post.authorId ? (
+              <a onClick={handleDelete} className="ml-2 cursor-pointer">
+                <Trash2 size={28} strokeWidth={2.75} />
+              </a>
+            ) : null}
           </div>
 
           <a href={`/r/${subredditName}/post/${post.id}`}>
