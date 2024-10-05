@@ -72,9 +72,9 @@ const Post: FC<PostProps> = ({
         description: "An error occurred while deleting the post.",
         variant: "destructive",
       });
-    } finally {
-      window.location.reload();
-    }
+    } //finally {
+    //window.location.reload();
+    //}
   };
 
   return (
