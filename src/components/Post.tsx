@@ -44,7 +44,7 @@ const Post: FC<PostProps> = ({
 
     try {
       const response = await fetch(
-        `/api/subreddit/post/delete/${post.id}`, // corrected URL structure
+        `/api/subreddit/post/delete?postId=${post.id}`,
         {
           method: "DELETE",
         }
@@ -57,8 +57,6 @@ const Post: FC<PostProps> = ({
           description: "Post removed.",
           variant: "default",
         });
-
-        window.location.reload();
       } else {
         console.error("Failed to delete post");
         return toast({
@@ -74,6 +72,8 @@ const Post: FC<PostProps> = ({
         description: "An error occurred while deleting the post.",
         variant: "destructive",
       });
+    } finally {
+      window.location.reload();
     }
   };
 

@@ -1,34 +1,32 @@
 import { getAuthSession } from "@/lib/auth";
 import { db } from "@/lib/db";
+import { NextResponse } from "next/server";
 
-export async function DELETE(
-  req: Request,
-  { params }: { params: { postId: string } }
-) {
+// Handling DELETE method
+export async function DELETE(req: Request) {
+  const { searchParams } = new URL(req.url);
+  const postId = searchParams.get("postId"); // extract the postId from the URL
+
   try {
-    // Get the session to verify the user is logged in
     const session = await getAuthSession();
 
     if (!session?.user) {
-      return new Response("Unauthorized", { status: 401 });
+      return NextResponse.json("Unauthorized", { status: 401 });
     }
-
-    const postId = params.postId;
 
     // Find the post by ID
     const post = await db.post.findUnique({
       where: {
-        id: postId,
+        id: postId || "",
       },
     });
 
     if (!post) {
-      return new Response("Post not found", { status: 404 });
+      return NextResponse.json("Post not found", { status: 404 });
     }
 
-    // Check if the logged-in user is the author of the post
     if (post.authorId !== session.user.id) {
-      return new Response("You are not authorized to delete this post", {
+      return NextResponse.json("You are not authorized to delete this post", {
         status: 403,
       });
     }
@@ -36,15 +34,12 @@ export async function DELETE(
     // Delete the post
     await db.post.delete({
       where: {
-        id: postId,
+        id: postId || "",
       },
     });
 
-    return new Response("Post deleted successfully", { status: 200 });
+    return NextResponse.json("Post deleted successfully", { status: 200 });
   } catch (error) {
-    return new Response(
-      "An error occurred while deleting the post. Please try again later.",
-      { status: 500 }
-    );
+    return NextResponse.json("Failed to delete post.", { status: 500 });
   }
 }
